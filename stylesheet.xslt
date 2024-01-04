@@ -11,13 +11,12 @@ Andreas Hontzia (@honze_net)
     <html lang="en">
       <head>
         <meta name="referrer" content="no-referrer"/> 
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/darkly/bootstrap.min.css" crossorigin="anonymous"/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" crossorigin="anonymous"/>
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" type="text/css" crossorigin="anonymous"/>
 		<script src="https://code.jquery.com/jquery-3.3.1.js" crossorigin="anonymous"></script>
 		<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
 		<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>		
-        <title>Scan Results Nmap<xsl:value-of select="/nmaprun/@version"/></title>
       </head>
       <body>
         <nav class="navbar navbar-default navbar-fixed-top">
@@ -42,8 +41,8 @@ Andreas Hontzia (@honze_net)
         </nav>
         <div class="container">
           <div class="jumbotron">
-            <h1>Scan Results<br/><small>Nmap <xsl:value-of select="/nmaprun/@version"/></small></h1>
-            <pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="/nmaprun/@args"/></pre>
+            <h1>Scan Results</h1>
+            <!--<pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="/nmaprun/@args"/></pre>-->
             <p class="lead">
               <xsl:value-of select="/nmaprun/@startstr"/> – <xsl:value-of select="/nmaprun/runstats/finished/@timestr"/><br/>
               <xsl:value-of select="/nmaprun/runstats/hosts/@total"/> hosts scanned.
@@ -119,93 +118,79 @@ Andreas Hontzia (@honze_net)
                   <xsl:attribute name="data-target">#<xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
                 <h3 class="panel-title"><xsl:value-of select="address/@addr"/><xsl:if test="count(hostnames/hostname) > 0"> - <xsl:value-of select="hostnames/hostname/@name"/></xsl:if></h3>
               </div>
-              <div class="panel-body collapse in">
+              <div class="panel-body collapse">
                 <xsl:attribute name="id"><xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
                 <xsl:if test="count(hostnames/hostname) > 0">
                   <h4>Hostnames</h4>
-                  <ul>
-                    <xsl:for-each select="hostnames/hostname">
-                      <li><xsl:value-of select="@name"/> (<xsl:value-of select="@type"/>)</li>
-                    </xsl:for-each>
-                  </ul>
+         <ul style="list-style-type: none; padding: 0;">
+  <xsl:for-each select="hostnames/hostname">
+    <li>
+      <xsl:value-of select="@name"/>
+      (<xsl:value-of select="@type"/>)
+    </li>
+  </xsl:for-each>
+</ul>
                 </xsl:if>
                 <h4>Ports</h4>
                 <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Port</th>
-                        <th>Protocol</th>
-                        <th>State<br/>Reason</th>
-                        <th>Service</th>
-                        <th>Product</th>
-                        <th>Version</th>
-                        <th>Extra Info</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <xsl:for-each select="ports/port">
-                        <xsl:choose>
-                          <xsl:when test="state/@state = 'open'">
-                            <tr class="success">
-                              <td title="Port"><xsl:value-of select="@portid"/></td>
-                              <td title="Protocol"><xsl:value-of select="@protocol"/></td>
-                              <td title="State / Reason"><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-                              <td title="Service"><xsl:value-of select="service/@name"/></td>
-                              <td title="Product"><xsl:value-of select="service/@product"/></td>
-                              <td title="Version"><xsl:value-of select="service/@version"/></td>
-                              <td title="Extra Info"><xsl:value-of select="service/@extrainfo"/></td>
-                            </tr>
-                            <tr>
-                              <td colspan="7">
-                                <a><xsl:attribute name="href">https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version=<xsl:value-of select="service/cpe"/></xsl:attribute><xsl:value-of select="service/cpe"/></a>
-                                <xsl:for-each select="script">
-                                  <h5><xsl:value-of select="@id"/></h5>
-                                  <pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="@output"/></pre>
-                                </xsl:for-each>
-                              </td>
-                            </tr>
-                          </xsl:when>
-                          <xsl:when test="state/@state = 'filtered'">
-                            <tr class="warning">
-                              <td><xsl:value-of select="@portid"/></td>
-                              <td><xsl:value-of select="@protocol"/></td>
-                              <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-                              <td><xsl:value-of select="service/@name"/></td>
-                              <td><xsl:value-of select="service/@product"/></td>
-                              <td><xsl:value-of select="service/@version"/></td>
-                              <td><xsl:value-of select="service/@extrainfo"/></td>
-                            </tr>
-                          </xsl:when>
-                          <xsl:when test="state/@state = 'closed'">
-                            <tr class="active">
-                              <td><xsl:value-of select="@portid"/></td>
-                              <td><xsl:value-of select="@protocol"/></td>
-                              <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-                              <td><xsl:value-of select="service/@name"/></td>
-                              <td><xsl:value-of select="service/@product"/></td>
-                              <td><xsl:value-of select="service/@version"/></td>
-                              <td><xsl:value-of select="service/@extrainfo"/></td>
-                            </tr>
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <tr class="info">
-                              <td><xsl:value-of select="@portid"/></td>
-                              <td><xsl:value-of select="@protocol"/></td>
-                              <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-                              <td><xsl:value-of select="service/@name"/></td>
-                              <td><xsl:value-of select="service/@product"/></td>
-                              <td><xsl:value-of select="service/@version"/></td>
-                              <td><xsl:value-of select="service/@extrainfo"/></td>
-                            </tr>
-                          </xsl:otherwise>
-                        </xsl:choose>
-                      </xsl:for-each>
-                    </tbody>
-                  </table>
-                </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Port</th>
+        <th>Protocol</th>
+        <th>State/Reason</th>
+        <th>Service</th>
+        <th>Product</th>
+        <th>Version</th>
+        <th>Extra Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <xsl:for-each select="/nmaprun/host/ports/port">
+        <xsl:variable name="portId" select="@portid" />
+        <tr>
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td>
+            <xsl:value-of select="state/@state"/>
+            <br/>
+            <xsl:value-of select="state/@reason"/>
+          </td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+    <xsl:if test="service/cpe or script">
+      <tr>
+        <td colspan="7">
+          <h4>Finding Details</h4>
+          <xsl:if test="service/cpe">
+            <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={service/cpe}">
+              <xsl:value-of select="service/cpe"/>
+            </a>
+            <br/>
+          </xsl:if>
+          <xsl:for-each select="script">
+            <xsl:variable name="scriptPosition" select="position()" />
+            <button class="btn btn-info" data-toggle="collapse" data-target="#script-output-{$portId}-{$scriptPosition}">
+              <xsl:value-of select="@id"/>
+            </button>
+            <div id="script-output-{$portId}-{$scriptPosition}" class="collapse">
+              <pre style="white-space:pre-wrap; word-wrap:break-word;">
+                <xsl:value-of select="@output"/>
+              </pre>
+            </div>
+          </xsl:for-each>
+        </td>                  
+      </tr>
+    </xsl:if>
+      </xsl:for-each>
+    </tbody>
+  </table>
+</div>
                 <xsl:if test="count(hostscript/script) > 0">
-                  <h4>Host Script</h4>
+                  <h4>Host Script Full Output</h4>
                 </xsl:if>
                 <xsl:for-each select="hostscript/script">
                   <h5><xsl:value-of select="@id"/></h5>
@@ -213,16 +198,24 @@ Andreas Hontzia (@honze_net)
                 </xsl:for-each>
                 <xsl:if test="count(os/osmatch) > 0">
                   <h4>OS Detection</h4>
-                  <xsl:for-each select="os/osmatch">
-                    <h5>OS details: <xsl:value-of select="@name"/> (<xsl:value-of select="@accuracy"/>%)</h5>
-                    <xsl:for-each select="osclass">
-                      Device type: <xsl:value-of select="@type"/><br/>
-                      Running: <xsl:value-of select="@vendor"/><xsl:text> </xsl:text><xsl:value-of select="@osfamily"/><xsl:text> </xsl:text><xsl:value-of select="@osgen"/> (<xsl:value-of select="@accuracy"/>%)<br/>
-                      OS CPE: <a><xsl:attribute name="href">https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version=<xsl:value-of select="cpe"/></xsl:attribute><xsl:value-of select="cpe"/></a>
-                      <br/>
-                    </xsl:for-each>
-                    <br/>
-                  </xsl:for-each>
+<xsl:for-each select="os/osmatch">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-{position()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      OS Detection (Confidence %): <xsl:value-of select="@name"/> (<xsl:value-of select="@accuracy"/>%)
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu-{position()}">
+      <xsl:for-each select="osclass">
+        <li>
+          Device type: <xsl:value-of select="@type"/><br/>
+          OS Best Guess: <xsl:value-of select="@vendor"/> <xsl:value-of select="@osfamily"/> <xsl:value-of select="@osgen"/> (<xsl:value-of select="@accuracy"/>%)<br/>
+          CPE Vuln Info: <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={cpe}"><xsl:value-of select="cpe"/></a>
+          <br/>
+        </li>
+      </xsl:for-each>
+    </ul>
+  </div>
+</xsl:for-each>
                 </xsl:if>
               </div>
             </div>
@@ -238,28 +231,60 @@ Andreas Hontzia (@honze_net)
                   <th>Service</th>
                   <th>Product</th>
                   <th>Version</th>
-                  <th>CPE</th>
-                  <th>Extra info</th>
+                  <th>CPE Info</th>
+                  <!--<th>Extra info</th>-->
                 </tr>
               </thead>
               <tbody>
-                <xsl:for-each select="/nmaprun/host">
-                  <xsl:for-each select="ports/port[state/@state='open']">
-                    <tr>
-                      <td><a>
-                      <xsl:attribute name="href">#onlinehosts-<xsl:value-of select="translate(../../address/@addr, '.', '-')"/></xsl:attribute><xsl:value-of select="../../address/@addr"/>
-                      <xsl:if test="count(../../hostnames/hostname) > 0"> - <xsl:value-of select="../../hostnames/hostname/@name"/></xsl:if></a></td>
-                      <td><xsl:value-of select="@portid"/></td>
-                      <td><xsl:value-of select="@protocol"/></td>
-                      <td><xsl:value-of select="service/@name"/></td>
-                      <td><xsl:value-of select="service/@product"/></td>
-                      <td><xsl:value-of select="service/@version"/></td>
-                      <td><xsl:value-of select="service/cpe"/></td>
-                      <td><xsl:value-of select="service/@extrainfo"/></td>
-                    </tr>
-                  </xsl:for-each>
-                </xsl:for-each>
-              </tbody>
+  <xsl:for-each select="/nmaprun/host/ports/port">
+    <xsl:choose>
+      <xsl:when test="state/@state = 'open'">
+        <tr class="danger">
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+      </xsl:when>
+      <xsl:when test="state/@state = 'filtered'">
+        <tr class="success">
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+      </xsl:when>
+      <xsl:when test="state/@state = 'closed'">
+        <tr class="success">
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+      </xsl:when>
+      <xsl:otherwise>
+        <tr class="info">
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+</tbody>
             </table>
           </div>
           <script>

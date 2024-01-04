@@ -12,9 +12,17 @@ def index():
     return render_template('index.html')
 
 # Function to run Nmap scan and return XML result
+#def run_nmap(target):
+    #scripts = 'metasploit-info,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,snmp-processes,dns-brute,banner,ssl-enum-ciphers,ssh2-enum-algos'
+    #command = ["nmap", "-oX", "-sC", "-sS", "-T4", "-A", "--script", scripts, target]
+    #scripts = 'metasploit-info,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,snmp-processes,dns-brute,banner,ssl-enum-ciphers,ssh2-enum-algos'
+    #command = ["nmap", "-oX", "-sC", "-sS", "-T4", "-A", target]    
+    #esult = subprocess.run(command, capture_output=True, text=True)
+   #return result.stdout
+
 def run_nmap(target):
-    scripts = 'metasploit-info,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,snmp-processes,dns-brute,banner,ssl-enum-ciphers,ssh2-enum-algos'
-    command = ["nmap", "-oX", "-sC", "-sS", "-T4", "-A", "--script", scripts, target]
+    scripts = 'metasploit-info,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,snmp-processes,dns-brute,banner,ssl-enum-ciphers,ssh2-enum-algos,vulners'
+    command = ["nmap", "-oX", "-", "sV", "-sC", "-sS", "-T4", "-A", "--script", scripts, target]
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout
 
