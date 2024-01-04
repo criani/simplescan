@@ -34,3 +34,14 @@ content: "";
           }
           .panel-heading.collapsed > h3:before {
             content: "\e080"; /* glyphicon-chevron-right */
+			
+			@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.glyphicon-spin {
+  animation: spin 1s infinite linear;
+  -webkit-animation: spin 1s infinite linear;
+}

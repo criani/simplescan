@@ -164,7 +164,7 @@ Andreas Hontzia (@honze_net)
     <xsl:if test="service/cpe or script">
       <tr>
         <td colspan="7">
-          <h4>Finding Details</h4>
+          <h4>Port/Service Details</h4>
           <xsl:if test="service/cpe">
             <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={service/cpe}">
               <xsl:value-of select="service/cpe"/>
