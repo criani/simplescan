@@ -14,8 +14,8 @@ def index():
 
 # Function to run Nmap scan and return XML result
 def run_nmap(target):
-    scripts = 'vulners,metasploit-info,smb-enum-shares,smb-enum-users,snmp-netstat,snmp-processes,dns-brute,http-title,banner,ssl-enum-ciphers,tls-nextprotoneg'
-    command = ["nmap", "-oX", "-", "sV", "--script", scripts, target]
+    scripts = 'vulners,metasploit-info,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,snmp-processes,http-vuln-*,dns-brute,banner,ssl-enum-ciphers,ssh2-enum-algos'
+    command = ["nmap", "-oX", "-", "sV", "--script", scripts, "--script-args", "mincvss=3.0", target]
     result = subprocess.run(command, capture_output=True, text=True)
     return result.stdout
 
