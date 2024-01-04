@@ -37,8 +37,3 @@ function initiateScan() {
         updateStatus('Fetch error: ' + error.message, false);
     });
 }
-
-
-function updateStatus(message) {
-    document.getElementById('status').textContent = message;
-}

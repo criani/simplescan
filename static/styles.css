@@ -1,41 +1,43 @@
-content: "";
-            display: block;
-            height: 50px;
-            margin: -20px 0 0;
-          }
-          @media only screen and (min-width:1900px) {
-            .container {
-              width: 1800px;
-              }
-          }
-          .footer {
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-			height: 60px; /* Set the fixed height of the footer here */
-			background-color: inherit; /* Inherit the background color from the parent */
-          }
-		  
-		  .inputbox {
-			display: block; /* Centering requires block display */
-			margin: 0 auto; /* Auto margins on the side centers the element */
-			width: 0%; /* Or whatever width you prefer */
+.container {
+  width: 1800px;
 }
 
-		  
-		  
-          .clickable {
-            cursor: pointer;
-          }
-          .panel-heading > h3:before {
-            font-family: 'Glyphicons Halflings';
-            content: "\e114"; /* glyphicon-chevron-down */
-            padding-right: 1em;
-          }
-          .panel-heading.collapsed > h3:before {
-            content: "\e080"; /* glyphicon-chevron-right */
-			
-			@keyframes spin {
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: inherit;
+}
+
+.inputbox {
+  display: block;
+  margin: 0 auto;
+  width: 20%; /* Adjust this to your preference */
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.panel-heading > h3:before {
+  font-family: 'Glyphicons Halflings';
+  content: "\e114"; /* glyphicon-chevron-down */
+  padding-right: 1em;
+}
+
+.panel-heading.collapsed > h3:before {
+  content: "\e080"; /* glyphicon-chevron-right */
+}
+
+@media only screen and (min-width: 1900px) {
+  .container {
+    width: 1800px;
+  }
+}
+
+/* Spinner Styles */
+@keyframes spin {
   100% {
     transform: rotate(360deg);
   }
@@ -45,3 +47,4 @@ content: "";
   animation: spin 1s infinite linear;
   -webkit-animation: spin 1s infinite linear;
 }
+

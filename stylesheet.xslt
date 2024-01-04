@@ -173,7 +173,7 @@ Andreas Hontzia (@honze_net)
           </xsl:if>
           <xsl:for-each select="script">
             <xsl:variable name="scriptPosition" select="position()" />
-            <button class="btn btn-info" data-toggle="collapse" data-target="#script-output-{$portId}-{$scriptPosition}">
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#script-output-{$portId}-{$scriptPosition}">
               <xsl:value-of select="@id"/>
             </button>
             <div id="script-output-{$portId}-{$scriptPosition}" class="collapse">
@@ -200,7 +200,7 @@ Andreas Hontzia (@honze_net)
                   <h4>OS Detection</h4>
 <xsl:for-each select="os/osmatch">
   <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu-{position()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu-{position()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
       OS Detection (Confidence %): <xsl:value-of select="@name"/> (<xsl:value-of select="@accuracy"/>%)
       <span class="caret"></span>
     </button>
