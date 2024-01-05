@@ -1,5 +1,6 @@
 1. create readme
 make public
 adjust widths/dynamics for screensizes
+swap vulners for vulscan NSE? (is this possible,check performance, db update procedure etc)
 scan saving /retrieval w/reporting module
 auth? (prob not, meant to be run local/home only)
