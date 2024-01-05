@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-SimpleScan by NextierCyber
-Base code from:
-Nmap Bootstrap XSL by Andreas Hontzia (@honze_net)
+Nmap Bootstrap XSL
 Creative Commons BY-SA
+This software must not be used by military or secret service organisations.
+Andreas Hontzia (@honze_net)
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="html" encoding="utf-8" indent="yes" doctype-system="about:legacy-compat"/>
@@ -39,9 +39,7 @@ Creative Commons BY-SA
             </div>
           </div>
         </nav>
-        
-<!-- Section for Totals -->		
-		<div class="container">
+        <div class="container">
           <div class="jumbotron">
             <h1>Scan Results</h1>
             <!--<pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="/nmaprun/@args"/></pre>-->
@@ -112,88 +110,117 @@ Creative Commons BY-SA
               "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ]
             });
           </script>
-
-<!-- Section for Individual Host details -->
-<h2 id="onlinehosts" class="target">Online Hosts</h2>
-<xsl:for-each select="/nmaprun/host[status/@state='up']">
-  <div class="panel panel-default">
-    <div class="panel-heading clickable" data-toggle="collapse">
-      <xsl:attribute name="id">onlinehosts-<xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
-      <xsl:attribute name="data-target">#<xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
-      <h3 class="panel-title"><xsl:value-of select="address/@addr"/></h3>
-    </div>
-    <div class="panel-body collapse">
-      <xsl:attribute name="id"><xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
-      <h4>Hostnames</h4>
-      <ul style="list-style-type: none; padding: 0;">
-        <xsl:for-each select="hostnames/hostname">
-          <li>
-            <xsl:value-of select="@name"/> (<xsl:value-of select="@type"/>)
-          </li>
-        </xsl:for-each>
-      </ul>
-      <h4>Ports</h4>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Port</th>
-              <th>Protocol</th>
-              <th>State/Reason</th>
-              <th>Service</th>
-              <th>Product</th>
-              <th>Version</th>
-              <th>Extra Info</th>
-            </tr>
-          </thead>
-          <tbody>
-            <xsl:for-each select="nmaprun/host/ports/port">
-              <xsl:variable name="portId" select="@portid" />
-              <tr>
-                <td><xsl:value-of select="@portid"/></td>
-                <td><xsl:value-of select="@protocol"/></td>
-                <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-                <td><xsl:value-of select="service/@name"/></td>
-                <td><xsl:value-of select="service/@product"/></td>
-                <td><xsl:value-of select="service/@version"/></td>
-                <td><xsl:value-of select="service/@extrainfo"/></td>
-              </tr>
-              <xsl:if test="service/cpe or script">
-                <tr>
-                  <td colspan="7">
-                    <h4>Port/Service Details</h4>
-                    <xsl:if test="service/cpe">
-                      <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={service/cpe}">
-                        <xsl:value-of select="service/cpe"/>
-                      </a>
-                      <br/>
-                    </xsl:if>
-                    <xsl:for-each select="script">
-                      <xsl:variable name="scriptPosition" select="position()" />
-                      <button class="btn btn-info" data-toggle="collapse" data-target="#script-output-{$portId}-{$scriptPosition}">
-                        <xsl:value-of select="@id"/>
-                      </button>
-                      <div id="script-output-{$portId}-{$scriptPosition}" class="collapse">
-                        <pre style="white-space:pre-wrap; word-wrap:break-word;">
-                          <xsl:value-of select="@output"/>
-                        </pre>
-                      </div>
-                    </xsl:for-each>
-                  </td>                  
-                </tr>
-              </xsl:if>
-            </xsl:for-each>
-          </tbody>
-        </table>
-      </div>
-    </div>
+		<h2 id="onlinehosts" class="target">Online Hosts</h2>
+          <xsl:for-each select="/nmaprun/host[status/@state='up']">
+            <div class="panel panel-default">
+              <div class="panel-heading clickable" data-toggle="collapse">
+                  <xsl:attribute name="id">onlinehosts-<xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
+                  <xsl:attribute name="data-target">#<xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
+                <h3 class="panel-title"><xsl:value-of select="address/@addr"/><xsl:if test="count(hostnames/hostname) > 0"> - <xsl:value-of select="hostnames/hostname/@name"/></xsl:if></h3>
+              </div>
+              <div class="panel-body collapse">
+                <xsl:attribute name="id"><xsl:value-of select="translate(address/@addr, '.', '-')"/></xsl:attribute>
+                <xsl:if test="count(hostnames/hostname) > 0">
+                  <h4>Hostnames</h4>
+         <ul style="list-style-type: none; padding: 0;">
+  <xsl:for-each select="hostnames/hostname">
+    <li>
+      <xsl:value-of select="@name"/>
+      (<xsl:value-of select="@type"/>)
+    </li>
+  </xsl:for-each>
+</ul>
+                </xsl:if>
+                <h4>Ports</h4>
+                <div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Port</th>
+        <th>Protocol</th>
+        <th>State/Reason</th>
+        <th>Service</th>
+        <th>Product</th>
+        <th>Version</th>
+        <th>Extra Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <xsl:for-each select="/nmaprun/host/ports/port">
+        <xsl:variable name="portId" select="@portid" />
+        <tr>
+          <td><xsl:value-of select="@portid"/></td>
+          <td><xsl:value-of select="@protocol"/></td>
+          <td>
+            <xsl:value-of select="state/@state"/>
+            <br/>
+            <xsl:value-of select="state/@reason"/>
+          </td>
+          <td><xsl:value-of select="service/@name"/></td>
+          <td><xsl:value-of select="service/@product"/></td>
+          <td><xsl:value-of select="service/@version"/></td>
+          <td><xsl:value-of select="service/@extrainfo"/></td>
+        </tr>
+    <xsl:if test="service/cpe or script">
+      <tr>
+        <td colspan="7">
+          <h4>Port/Service Details</h4>
+          <xsl:if test="service/cpe">
+            <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={service/cpe}">
+              <xsl:value-of select="service/cpe"/>
+            </a>
+            <br/>
+          </xsl:if>
+          <xsl:for-each select="script">
+            <xsl:variable name="scriptPosition" select="position()" />
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#script-output-{$portId}-{$scriptPosition}">
+              <xsl:value-of select="@id"/>
+            </button>
+            <div id="script-output-{$portId}-{$scriptPosition}" class="collapse">
+              <pre style="white-space:pre-wrap; word-wrap:break-word;">
+                <xsl:value-of select="@output"/>
+              </pre>
+            </div>
+          </xsl:for-each>
+        </td>                  
+      </tr>
+    </xsl:if>
+      </xsl:for-each>
+    </tbody>
+  </table>
+</div>
+                <xsl:if test="count(hostscript/script) > 0">
+                  <h4>Host Script Full Output</h4>
+                </xsl:if>
+                <xsl:for-each select="hostscript/script">
+                  <h5><xsl:value-of select="@id"/></h5>
+                  <pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="@output"/></pre>
+                </xsl:for-each>
+                <xsl:if test="count(os/osmatch) > 0">
+                  <h4>OS Detection</h4>
+<xsl:for-each select="os/osmatch">
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu-{position()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      OS Detection (Confidence %): <xsl:value-of select="@name"/> (<xsl:value-of select="@accuracy"/>%)
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu-{position()}">
+      <xsl:for-each select="osclass">
+        <li>
+          Device type: <xsl:value-of select="@type"/><br/>
+          OS Best Guess: <xsl:value-of select="@vendor"/> <xsl:value-of select="@osfamily"/> <xsl:value-of select="@osgen"/> (<xsl:value-of select="@accuracy"/>%)<br/>
+          CPE Vuln Info: <a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={cpe}"><xsl:value-of select="cpe"/></a>
+          <br/>
+        </li>
+      </xsl:for-each>
+    </ul>
   </div>
 </xsl:for-each>
-
-
-<!-- Section for Exposed Services-->
-
-       <h2 id="openservices" class="target">Exposed Services</h2>
+                </xsl:if>
+              </div>
+            </div>
+          </xsl:for-each>
+          <h2 id="openservices" class="target">Open Services</h2>
           <div class="table-responsive">
             <table id="table-services" class="table table-striped dataTable" role="grid">
               <thead>
@@ -234,7 +261,7 @@ Creative Commons BY-SA
         </tr>
       </xsl:when>
       <xsl:when test="state/@state = 'closed'">
-        <tr class="default">
+        <tr class="success">
           <td><xsl:value-of select="@portid"/></td>
           <td><xsl:value-of select="@protocol"/></td>
           <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
@@ -245,7 +272,7 @@ Creative Commons BY-SA
         </tr>
       </xsl:when>
       <xsl:otherwise>
-        <tr class="default">
+        <tr class="info">
           <td><xsl:value-of select="@portid"/></td>
           <td><xsl:value-of select="@protocol"/></td>
           <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
