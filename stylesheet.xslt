@@ -146,6 +146,7 @@ Creative Commons BY-SA
           </thead>
           <tbody>
             <xsl:for-each select="ports/port">
+              <xsl:variable name="portId" select="@portid" />
               <tr>
                 <td><xsl:value-of select="@portid"/></td>
                 <td><xsl:value-of select="@protocol"/></td>
@@ -186,6 +187,7 @@ Creative Commons BY-SA
     </div>
   </div>
 </xsl:for-each>
+
 
 <!-- Section for Exposed Services-->
 
