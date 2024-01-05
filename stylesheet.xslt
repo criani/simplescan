@@ -39,7 +39,9 @@ Creative Commons BY-SA
             </div>
           </div>
         </nav>
-        <div class="container">
+        
+<!-- Section for Totals -->		
+		<div class="container">
           <div class="jumbotron">
             <h1>Scan Results</h1>
             <!--<pre style="white-space:pre-wrap; word-wrap:break-word;"><xsl:value-of select="/nmaprun/@args"/></pre>-->
@@ -145,7 +147,7 @@ Creative Commons BY-SA
             </tr>
           </thead>
           <tbody>
-            <xsl:for-each select="ports/port">
+            <xsl:for-each select="nmaprun/host/ports/port">
               <xsl:variable name="portId" select="@portid" />
               <tr>
                 <td><xsl:value-of select="@portid"/></td>
@@ -232,7 +234,7 @@ Creative Commons BY-SA
         </tr>
       </xsl:when>
       <xsl:when test="state/@state = 'closed'">
-        <tr class="success">
+        <tr class="default">
           <td><xsl:value-of select="@portid"/></td>
           <td><xsl:value-of select="@protocol"/></td>
           <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
@@ -243,7 +245,7 @@ Creative Commons BY-SA
         </tr>
       </xsl:when>
       <xsl:otherwise>
-        <tr class="info">
+        <tr class="default">
           <td><xsl:value-of select="@portid"/></td>
           <td><xsl:value-of select="@protocol"/></td>
           <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
