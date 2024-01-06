@@ -1,6 +1,8 @@
 import os
 import subprocess
-from flask import Flask, jsonify, render_template, request
+import glob
+import time
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from lxml import etree
 from io import BytesIO
 
@@ -15,13 +17,24 @@ def run_nmap(target):
     scripts = 'vulners'
     command = [
         "nmap", "-oX", "-", "-sV", "--version-intensity", "9", 
-        "--script", scripts, target
+        "--script", scripts, "--script-args mincvss=1", target
     ]
-
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        print("Nmap Scan Result:")
-        print(result.stdout)  # Print the XML output for debugging
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        filename = f"nmap_scan_{timestamp}.xml"
+        scans_dir = os.path.join(os.path.dirname(__file__), 'scans')  # Use relative path
+
+        # Check if the scans directory exists and create it if it doesn't
+        if not os.path.exists(scans_dir):
+            os.makedirs(scans_dir)
+
+        filepath = os.path.join(scans_dir, filename)
+
+        with open(filepath, 'w') as file:
+            file.write(result.stdout)
+        
+        print(f"Saved scan result to {filename}")
         return result.stdout
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while running nmap: {e}")
@@ -65,7 +78,37 @@ def scan():
     else:
         # Return an error if nmap failed
         return jsonify({"error": "Nmap scan failed"}), 500
+        
+@app.route('/list_scans', methods=['GET'])
+def list_scans():
+    scans_dir = os.path.join(os.path.dirname(__file__), 'scans')
+    try:
+        scans = os.listdir(scans_dir)
+        return jsonify({"scans": scans})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+@app.route('/retrieve_scan/<filename>', methods=['GET'])
+def retrieve_scan(filename):
+    scans_dir = os.path.join(os.path.dirname(__file__), 'scans')
+    try:
+        # Construct the full file path
+        file_path = os.path.join(scans_dir, filename)
+
+        # Read the XML file content
+        with open(file_path, 'r') as file:
+            xml_content = file.read()
+
+        # Convert XML to HTML
+        html_content = xml_to_html(xml_content)
+        return html_content
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+#if __name__ == '__main__':
+    # Run the Flask app
+    #app.run(debug=True)
 
 if __name__ == '__main__':
-    # Run the Flask app
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
