@@ -16,7 +16,7 @@ def index():
 def run_nmap(target):
     scripts = 'vulners'
     command = [
-        "nmap", "-oX", "-", "-sV", "--version-intensity", "9", 
+        "nmap", "-oX", "-", "-sV", "--version-intensity 9", 
         "--script", scripts, "--script-args mincvss=1", target
     ]
     try:
@@ -107,4 +107,4 @@ def retrieve_scan(filename):
 
 
 if __name__ == '__main__':
-    app.run(host=debug=True)
+    app.run(host='127.0.0.1', debug=True)
