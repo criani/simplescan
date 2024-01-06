@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top">
         <!-- Navbar content -->
         <div class="container-fluid">
             <div class="navbar-header">
@@ -38,26 +38,39 @@
                 <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-home"></span></a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="#scannedhosts">Scanned Hosts</a></li>
-                    <li><a href="#onlinehosts">Online Hosts</a></li>
-                    <li><a href="#openservices">Open Services</a></li>
-                </ul>
-            </div>
+      <ul class="nav navbar-nav">
+        <li><a href="#scannedhosts">Scanned Hosts</a></li>
+        <li><a href="#onlinehosts">Online Hosts</a></li>
+        <li><a href="#openservices">Open Services</a></li>
+        </ul>
+    </div>
         </div>
     </nav>
-<div class="container text-center" style="padding-top: 30px;">
+<div class="container-fluid text-center" style="padding-top: 30px;">
     <h1>Simple Scanner</h1>
-    <div class="row">
-        <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
+    <div class="row justify-content-center">
+<div class="row justify-content-center">
+    <div class="col">
+        <div class="form-group" style="max-width: 500px; margin: auto;">
             <input type="text" id="url-input" class="form-control" placeholder="Enter URL or IP Range:'192.168.0.1/24','scanme.org', etc">
         </div>
     </div>
-    <div class="row" style="margin-top: 10px;">
-        <div class="col-xs-12">
-            <button id="scan-btn" class="btn btn-primary">Start Scan</button>
-        </div>
+</div>
+
     </div>
+<div class="row justify-content-center" style="margin-top: 10px;">
+    <div class="col-12">
+        <button id="scan-btn" class="btn btn-primary">Start Scan</button>
+     </div>
+	 <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Retrieve Prior Scans <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" id="scan-list">
+        <!-- Scans will be populated here -->
+    </ul>
+</div>
+</div>
     <div id="status"></div>
     <div id="results"></div>
 </div>

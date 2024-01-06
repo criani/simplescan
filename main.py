@@ -12,19 +12,21 @@ def index():
     return render_template('index.html')
 
 def run_nmap(target):
-    # Updated scripts with a comma-separated list of scripts
-    scripts = 'vulners,smb-enum-shares,smb-vuln*,smb-os-discovery,snmp-netstat,banner,ssl-enum-ciphers,ssh2-enum-algos'
-    # Corrected the command syntax for XML output
-    command = ["nmap", "-oX", "-", "-A", "--script", scripts, target]
-    
+    scripts = 'vulners'
+    command = [
+        "nmap", "-oX", "-", "-sV", "--version-intensity", "9", 
+        "--script", scripts, target
+    ]
+
     try:
-        # Run nmap and return the XML output
         result = subprocess.run(command, capture_output=True, text=True, check=True)
+        print("Nmap Scan Result:")
+        print(result.stdout)  # Print the XML output for debugging
         return result.stdout
     except subprocess.CalledProcessError as e:
-        # Log and return None if nmap fails
         print(f"An error occurred while running nmap: {e}")
         return None
+
 
 def xml_to_html(xml_string):
     try:
