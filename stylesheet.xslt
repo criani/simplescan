@@ -172,79 +172,6 @@ Andreas Hontzia (@honze_net)
 </xsl:for-each>
 
 
-          <h2>Vulnerabilities by Host</h2>
-
-<table class="table table-striped table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>Host IP</th>
-                <th>Type</th>
-                <th>Exploit</th>
-                <th>CVSS</th>
-                <th>ID</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Iterate over each host -->
-              <xsl:for-each select="/nmaprun/host[status/@state='up']">
-                <xsl:variable name="host_ip" select="address/@addr"/>
-                <!-- Iterate over each vulnerability table within the current host -->
-                <xsl:for-each select="ports/port/table">
-                  <tr>
-                    <td><xsl:value-of select="$host_ip"/></td>
-                    <td><xsl:value-of select="elem[@key='type']"/></td>
-                    <td>
-                      <xsl:choose>
-                        <xsl:when test="elem[@key='is_exploit'] = 'true'">Yes</xsl:when>
-                        <xsl:otherwise>No</xsl:otherwise>
-                      </xsl:choose>
-                    </td>
-                    <td><xsl:value-of select="elem[@key='cvss']"/></td>
-                    <td><xsl:value-of select="elem[@key='id']"/></td>
-                  </tr>
-                </xsl:for-each>
-              </xsl:for-each>
-            </tbody>
-          </table>
-
-
-  
-
-          <!-- Table for Vulnerabilities -->
-           <table class="table table-striped table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>Host IP</th>
-                <th>Vulnerability ID</th>
-                <th>CVSS</th>
-                <th>Exploit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Iterate over each vulnerability table -->
-              <xsl:for-each select="//host[status/@state='up']/ports/port/table">
-                <tr>
-                  <!-- Retrieve the host IP associated with this vulnerability -->
-                  <td><xsl:value-of select="../../address/@addr"/></td>
-                  <td><xsl:value-of select="elem[@key='id']"/></td>
-                  <td><xsl:value-of select="elem[@key='cvss']"/></td>
-                  <td>
-                    <xsl:choose>
-                      <xsl:when test="elem[@key='is_exploit']='true'">Yes</xsl:when>
-                      <xsl:otherwise>No</xsl:otherwise>
-                    </xsl:choose>
-                  </td>
-                </tr>
-              </xsl:for-each>
-            </tbody>
-          </table>
-
-
-
-
-
-
-  
 <div>		  
 <h2 id="openservices" class="target">Attack Surface</h2>
 <p class="lead">(As seen from scanner)</p>
@@ -319,7 +246,7 @@ Andreas Hontzia (@honze_net)
               $('#table-services').DataTable();
               $("a[href^='#onlinehosts-']").click(function(event){     
                   event.preventDefault();
-                  $('html,body').animate({scrollTop:($(this.hash).offset().top-90)}, 500);
+                  $('html,body').animate({scrollTop:($(this.hash).offset().top-130)}, 500);
               });
             });
             $('#table-services').DataTable( {
