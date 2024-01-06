@@ -15,10 +15,9 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = [
-        "nmap", "-oX", "-", "-sV", "--version-intensity 9", 
-        "--script", scripts, "--script-args mincvss=1", target
-    ]
+    command = ["nmap", "-oX", "-", "-sV", "--version-intensity", "9", "--script", "vulners", "--script-args", "mincvss=1", "scanme.org"]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -107,4 +106,4 @@ def retrieve_scan(filename):
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', debug=True)
+    app.run(host='0.0.0.0', debug=True)
