@@ -68,6 +68,10 @@ function displayScan(scanFilename) {
     fetch('/retrieve_scan/' + scanFilename)
     .then(response => response.text())
     .then(data => {
-        document.getElementById('results').innerHTML = data;
+        const resultsElement = document.getElementById('results');
+        // Clear existing content
+        resultsElement.innerHTML = '';
+        // Set new content
+        resultsElement.innerHTML = data;
     });
 }

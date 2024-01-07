@@ -15,9 +15,7 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "--version-intensity", "9", "--script", "vulners", "--script-args", "mincvss=1", "scanme.org"]
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
+    command = ["nmap", "-oX", "-", "-sV", "--version-intensity", "9", "--script", "vulners", "--script-args", "mincvss=1", target]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -64,6 +62,7 @@ def xml_to_html(xml_string):
 def scan():
     # Get the target from the POST request
     target = request.json.get('target', '')
+    print("Target received:", target)
     if not target:
         # Return an error if no target is specified
         return jsonify({"error": "No target specified"}), 400
