@@ -15,9 +15,8 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "-sS", "--min-hostgroup", "256", "--max-retries", "2",
-               "--host-timeout", "5m", "--version-intensity", "8", "--script", scripts, "--script-args",
-               "mincvss=1", "-p", "T:1-65535,U:1-1024", target]
+    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "-vv", "-F", "-sS", "--min-hostgroup", "256", "--host-timeout", "10m", "--version-intensity", "8", "--script", scripts, "--script-args",
+               "mincvss=1", target]
 
 
     try:
