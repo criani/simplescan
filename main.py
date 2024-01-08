@@ -15,11 +15,11 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "--version-intensity", "9", "--script", "vulners", "--script-args", "mincvss=1", target]
+    command = ["nmap", "-oX", "-", "-sV", "-sU", "--version-intensity", "9", "--script", "vulners", "--script-args", "mincvss=1", target]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        timestamp = time.strftime("%Y%m%d-%H%M%S")
-        filename = f"nmap_scan_{timestamp}.xml"
+        timestamp = time.strftime("%d%m%Y-%H%M%S")
+        filename = f"{target}_{timestamp}.xml"
         scans_dir = os.path.join(os.path.dirname(__file__), 'scans')  # Use relative path
 
         # Check if the scans directory exists and create it if it doesn't

@@ -18,7 +18,7 @@ function initiateScan() {
         return;
     }
     
-    updateStatus('Scanning ' + target + '...', true);
+    updateStatus('Scanning ' + target + 'this may take a while...', true);
 
     fetch('/scan', {
         method: 'POST',
