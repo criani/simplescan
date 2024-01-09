@@ -214,28 +214,6 @@ Andreas Hontzia (@honze_net)
           <td><xsl:value-of select="service/@extrainfo"/></td>
         </tr>
       </xsl:when>
-      <xsl:when test="state/@state = 'closed'">
-        <tr class="success">
-          <td><xsl:value-of select="@portid"/></td>
-          <td><xsl:value-of select="@protocol"/></td>
-          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-          <td><xsl:value-of select="service/@name"/></td>
-          <td><xsl:value-of select="service/@product"/></td>
-          <td><xsl:value-of select="service/@version"/></td>
-          <td><xsl:value-of select="service/@extrainfo"/></td>
-        </tr>
-      </xsl:when>
-      <xsl:otherwise>
-        <tr class="info">
-          <td><xsl:value-of select="@portid"/></td>
-          <td><xsl:value-of select="@protocol"/></td>
-          <td><xsl:value-of select="state/@state"/><br/><xsl:value-of select="state/@reason"/></td>
-          <td><xsl:value-of select="service/@name"/></td>
-          <td><xsl:value-of select="service/@product"/></td>
-          <td><xsl:value-of select="service/@version"/></td>
-          <td><xsl:value-of select="service/@extrainfo"/></td>
-        </tr>
-      </xsl:otherwise>
     </xsl:choose>
   </xsl:for-each>
 </tbody>

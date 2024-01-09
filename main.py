@@ -15,10 +15,7 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "-vv", "-F", "-sS", "--min-hostgroup", "256", "--host-timeout", "10m", "--version-intensity", "8", "--script", scripts, "--script-args",
-               "mincvss=1", target]
-
-
+    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "sS", "-sT", "-vvv", "-F", "--min-hostgroup", "256", "--host-timeout", "15m", "--version-intensity", "8", "--script", scripts, target]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         timestamp = time.strftime("%d%m%Y-%H%M%S")
