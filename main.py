@@ -15,14 +15,14 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "sS", "-sT", "-vvv", "-F", "--min-hostgroup", "256", "--host-timeout", "15m", "--version-intensity", "8", "--script", scripts, target]
+    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "-sS", "-sT", "-vvv", "-F", "--min-hostgroup", "256", "--host-timeout", "15m", "--version-intensity", "8", "--script", scripts, target]
+    
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
-        timestamp = time.strftime("%d%m%Y-%H%M%S")
+        timestamp = time.strftime("%m%d%Y-%H%M%S")
         filename = f"{target}_{timestamp}.xml"
         scans_dir = os.path.join(os.path.dirname(__file__), 'scans')
 
-        # Check if the scans directory exists and create it if it doesn't
         if not os.path.exists(scans_dir):
             os.makedirs(scans_dir)
 
@@ -34,7 +34,7 @@ def run_nmap(target):
         print(f"Saved scan result to {filename}")
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running nmap: {e}")
+        print(f"An error occurred while running nmap: {e}\nError Output: {e.output}")
         return None
 
 
@@ -105,4 +105,4 @@ def retrieve_scan(filename):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='127.0.0.1', debug=True)
