@@ -23,6 +23,8 @@ fi
 
 # Pull and run the SimpleScan Docker image
 echo "Pulling and running SimpleScan Docker image..."
+sudo mkdir /opt/simplescan
+cd /opt/simplescan
 sudo docker pull nextier/simplescan:arm64
 sudo docker run -d -p 5000:5000 nextier/simplescan:arm64
 
