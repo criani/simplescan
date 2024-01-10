@@ -21,6 +21,10 @@ if ! command_exists docker-compose; then
     sudo chmod +x /usr/local/bin/docker-compose
 fi
 
-sudo docker-compose up -d
+# Pull and run the SimpleScan Docker image
+echo "Pulling and running SimpleScan Docker image..."
+sudo docker pull nextier/simplescan:arm64
+sudo docker run -d -p 5000:5000 nextier/simplescan:arm64
 
-docker ps 
+echo "SimpleScan is now running on port 5000."
+
