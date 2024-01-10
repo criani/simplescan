@@ -1,4 +1,5 @@
 # simplescan Docker install
+copy autoinstall.sh to your /opt/ directory (or anywhere you have permissions)
 sudo bash autoinstall.sh
 
 # Run directly on host
