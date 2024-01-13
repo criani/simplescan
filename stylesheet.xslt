@@ -276,7 +276,7 @@
               $('#table-services').DataTable();
               $("a[href^='#onlinehosts-']").click(function(event){     
                   event.preventDefault();
-                  $('html,body').animate({scrollTop:($(this.hash).offset().top-150}, 500);
+                  $('html,body').animate({scrollTop:($(this.hash).offset().top-250}, 500);
               });
             });
             $('#table-services').DataTable( {
