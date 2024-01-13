@@ -15,12 +15,13 @@ def index():
 
 def run_nmap(target):
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-sV", "-O", "-sU", "-sT", "-vvv", "-F", "--min-hostgroup", "256", "--host-timeout", "15m", "--version-intensity", "8", "--script", scripts, target]
+    command = ["nmap", "-oX", "-", "-A", "-O", "-sSU", "-F", "--script", scripts, "--script-args", "min-cvss=1", target]
     
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         timestamp = time.strftime("%m%d%Y-%H%M%S")
-        filename = f"{target}_{timestamp}.xml"
+        sanitized_target = target.replace('/', '_')
+        filename = f"{sanitized_target}_{timestamp}.xml"
         scans_dir = os.path.join(os.path.dirname(__file__), 'scans')
 
         if not os.path.exists(scans_dir):
