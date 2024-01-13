@@ -25,8 +25,8 @@ fi
 echo "Pulling and running SimpleScan Docker image..."
 sudo mkdir /opt/simplescan
 cd /opt/simplescan
-sudo docker pull nextier/simplescan:arm64
-sudo docker run -d -p 5000:5000 nextier/simplescan:arm64
+sudo docker pull nextier/simplescan:latest
+sudo docker run -d -p 5000:5000 nextier/simplescan:latest
 
 echo "SimpleScan is now running on port 5000."
 
