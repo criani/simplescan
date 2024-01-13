@@ -1,4 +1,3 @@
-
 # SimpleScan Installation Guide
 
 Welcome to the SimpleScan project! This README provides detailed instructions for installing and running SimpleScan either using Docker or directly on your host system.
@@ -90,3 +89,20 @@ If you prefer to run SimpleScan directly on your host system, follow these instr
 
 - Running SimpleScan directly on your host requires you to manage the dependencies and environment configurations yourself.
 - For any issues or contributions, feel free to open an issue or a pull request in this repository.
+
+**LICENSE**
+SimpleScan is a simple, web based frontend that allows for running Nmap based vulnerability scans and reviewing the results in a user friendly way. 
+Copyright (C) 2023  Chris Riani
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
