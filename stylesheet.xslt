@@ -151,8 +151,29 @@
                             </tr>
                             <tr>
                               <td colspan="7">
-                                <a><xsl:attribute name="href">https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version=<xsl:value-of select="service/cpe"/></xsl:attribute><xsl:value-of select="service/cpe"/></a>
-                                <xsl:for-each select="script[@id='vulners']">
+									<xsl:if test="service/cpe">
+										<!-- Store CPE in a variable -->
+										<xsl:variable name="cpe" select="service/cpe"/>
+										<!-- Check if CPE contains at least four colon-separated sections -->
+										<xsl:variable name="hasVersion" select="contains(substring-after(substring-after(substring-after($cpe, ':'), ':'), ':'), ':')"/>
+
+										<xsl:choose>
+											<!-- Check if the CPE string likely contains a version -->
+											<xsl:when test="$hasVersion">
+												<!-- Display link with version -->
+												<a href="https://nvd.nist.gov/vuln/search/results?form_type=Advanced&amp;cves=on&amp;cpe_version={normalize-space($cpe)}">
+													Check Fingerprint Data
+												</a>
+												<br/>
+											</xsl:when>
+											<!-- Case when there is no clear version number in the CPE -->
+											<xsl:otherwise>
+												<span>Fingerprint Not Able to Determine Version</span>
+												<br/>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:if>
+                                 <xsl:for-each select="script[@id='vulners']">
                                   <h5 style="color: red; font-size: larger;">Vulnerabilities</h5>
                                   <pre style="white-space: pre-wrap; word-wrap: break-word; padding: 15px; background-color: #333; color: #fff; border: 1px solid #ccc; border-radius: 10px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
 										<xsl:value-of select="@output"/>

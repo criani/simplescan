@@ -5,6 +5,8 @@ import time
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from lxml import etree
 from io import BytesIO
+from urllib.parse import urlparse
+import re
 
 # Flask app initialization
 app = Flask(__name__)
@@ -14,14 +16,19 @@ def index():
     return render_template('index.html')
 
 def run_nmap(target):
+    # Parse the target URL to extract the domain
+    parsed_url = urlparse(target)
+    domain = parsed_url.netloc or parsed_url.path
+
+    # Your existing Nmap command setup
     scripts = 'vulners'
-    command = ["nmap", "-oX", "-", "-A", "-O", "-sSU", "-F", "--script", scripts, "--script-args", "min-cvss=1", target]
+    command = ["nmap", "-oX", "-", "-A", "-O", "-sSU", "-F", "--script", scripts, "--script-args", "min-cvss=1.0", domain]
     
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         timestamp = time.strftime("%m%d%Y-%H%M%S")
-        sanitized_target = target.replace('/', '_')
-        filename = f"{sanitized_target}_{timestamp}.xml"
+        sanitized_domain = re.sub(r'[^a-zA-Z0-9\-_.]', '_', domain)  # Sanitize the domain for filename
+        filename = f"{sanitized_domain}_{timestamp}.xml"
         scans_dir = os.path.join(os.path.dirname(__file__), 'scans')
 
         if not os.path.exists(scans_dir):
