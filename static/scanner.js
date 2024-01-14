@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('scan-btn').addEventListener('click', initiateScan);
-    document.querySelector('.btn-group .dropdown-toggle').addEventListener('click', retrieveScans);
+    document.querySelector('.btn-group .dropdown-toggle').addEventListener('click', populateScanLists);
 });
 
 
@@ -41,28 +41,52 @@ function initiateScan() {
     });
 }
 
-// Function to retrieve and display a list of scan files
-function retrieveScans() {
+// Function to populate both dropdowns with the list of scan files
+function populateScanLists() {
+	console.log("populateScanLists called");
     fetch('/list_scans')
     .then(response => response.json())
     .then(data => {
         if(data.error) {
             alert('Error: ' + data.error);
         } else {
-            const scanList = document.getElementById('scan-list');
-            scanList.innerHTML = ''; // Clear existing list
+            const scanListRetrieve = document.getElementById('scan-list-retrieve');
+            const scanListReport = document.getElementById('scan-list-report');
+            scanListRetrieve.innerHTML = ''; // Clear existing list
+            scanListReport.innerHTML = ''; // Clear existing list
+
             data.scans.forEach(scan => {
-                const listItem = document.createElement('li');
-                const link = document.createElement('a');
-                link.href = '#';
-                link.textContent = scan;
-                link.addEventListener('click', () => displayScan(scan));
-                listItem.appendChild(link);
-                scanList.appendChild(listItem);
+                // Populate the Retrieve Scans dropdown
+                const listItemRetrieve = document.createElement('li');
+                const linkRetrieve = document.createElement('a');
+                linkRetrieve.href = '#';
+                linkRetrieve.textContent = scan;
+                linkRetrieve.addEventListener('click', () => displayScan(scan));
+                listItemRetrieve.appendChild(linkRetrieve);
+                scanListRetrieve.appendChild(listItemRetrieve);
+
+                // Populate the Generate Word Report dropdown
+                const listItemReport = document.createElement('li');
+                const linkReport = document.createElement('a');
+                linkReport.href = '#';
+                linkReport.textContent = scan;
+                linkReport.addEventListener('click', () => retrieveWordReport(scan));
+                listItemReport.appendChild(linkReport);
+                scanListReport.appendChild(listItemReport);
             });
         }
     });
 }
+
+
+
+function retrieveWordReport(scanFilename) {
+    // Adjust the filename to replace '.xml' with '.docx' for the report retrieval
+    const reportFilename = scanFilename.replace('.xml', '.docx');
+    window.location.href = '/retrieve-word-report/' + reportFilename;
+}
+
+
 
 function displayScan(scanFilename) {
     fetch('/retrieve_scan/' + scanFilename)
@@ -75,3 +99,4 @@ function displayScan(scanFilename) {
         resultsElement.innerHTML = data;
     });
 }
+

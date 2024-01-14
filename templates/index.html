@@ -62,16 +62,33 @@
     <div class="col-12">
         <button id="scan-btn" class="btn btn-primary">Start Scan</button>
      </div>
+	 
+	 
 	 <h6>OR</h6>
-	 <div class="btn-group">
+	 
+	 
+	<!-- Dropdown for retrieving prior scans -->
+<div class="btn-group">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Retrieve Prior Scans <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu" id="scan-list">
+    <ul id="scan-list-retrieve" class="dropdown-menu">
         <!-- Scans will be populated here -->
     </ul>
 </div>
-<br></br>
+
+<!-- Dropdown for generating Word reports -->
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Retrieve Word Report <span class="caret"></span>
+    </button>
+    <ul id="scan-list-report" class="dropdown-menu">
+        <!-- Scans will be populated here -->
+    </ul>
+</div>
+
+<br/>
+
 </div>
     <div id="status"></div>
     <div id="results"></div>
