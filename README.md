@@ -21,6 +21,9 @@ SimpleScan can be easily installed and run in a Docker container. This method is
    This script will automatically pull and run the autoinstall script on your Pi / ARM64 type system and install Docker (if needed) and the required images, and will set up and start SimpleScan in a Docker container listening on port 5000 of the host system.
    To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host.
 
+   NOTE: if you ever need to recreate the container for whatever reason, you can just run the script again. Scans will persist on the host in /opt/simplescan/scans and reports will be in /opt/simplescan/reports. 
+
+
 #### Ubuntu/Debian
 
 1. **Download and run the Auto-Install Script**
@@ -30,8 +33,8 @@ SimpleScan can be easily installed and run in a Docker container. This method is
    ```sh
    curl -s https://raw.githubusercontent.com/criani/simplescan/main/autoinstall.sh | sudo bash
    ```
-   This script will automatically pull and run the autoinstall script on your Debian based system and install Docker (if needed) and the required images, and will set up and start SimpleScan in a Docker container listening on port 5000 of the host system.
-   To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host.
+   This script will automatically pull and run the autoinstall script on your Debian based system and install Docker and docker-compose (if needed) and the required images, and will set up and start SimpleScan in a Docker container listening on port 5000 of the host system.
+   To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host. Scans will persist on the host in /opt/simplescan/scans and reports will be in /opt/simplescan/reports. 
 
 #### CentOS/Redhat
 
@@ -45,7 +48,8 @@ SimpleScan can be easily installed and run in a Docker container. This method is
    sudo ./autoinstall_yum.sh
    ```
    This script will automatically pull and run the autoinstall script on your YUM based system and install Docker (if needed) and the required images, and will set up and start SimpleScan in a Docker container listening on port 5000 of the host system.
-   To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host.
+   To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host. Scans will persist on the host in /opt/simplescan/scans and reports will be in /opt/simplescan/reports. 
+
 
 ## Running Directly on Host (Advanced Users or Contributors)
 
