@@ -21,12 +21,18 @@ if ! command_exists docker-compose; then
     sudo chmod +x /usr/local/bin/docker-compose
 fi
 
-# Pull and run the SimpleScan Docker image
-echo "Pulling and running SimpleScan Docker image..."
-sudo mkdir /opt/simplescan
+# Create a directory for SimpleScan and enter it
+sudo mkdir -p /opt/simplescan
 cd /opt/simplescan
-sudo docker pull nextier/simplescan:latest
-sudo docker run -d -p 5000:5000 nextier/simplescan:latest
+
+# Download the docker-compose.yml file from the GitHub repository
+echo "Downloading docker-compose.yml from GitHub..."
+sudo curl -L "https://raw.githubusercontent.com/criani/simplescan/main/docker-compose.yml" -o docker-compose.yml
+
+# Run Docker Compose to start the SimpleScan container
+echo "Starting SimpleScan using Docker Compose..."
+sudo docker-compose up -d
 
 echo "SimpleScan is now running on port 5000."
+
 
