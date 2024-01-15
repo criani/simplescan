@@ -7,6 +7,11 @@ from lxml import etree
 from io import BytesIO
 from urllib.parse import urlparse
 from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import nsdecls
+from docx.shared import RGBColor
 import re
 import xml.etree.ElementTree as ET
 
@@ -41,8 +46,9 @@ def run_nmap(target):
             file.write(result.stdout)
         
         print(f"Saved scan result to {filename}")
-        return result.stdout
         create_word_report(filepath)
+        return result.stdout
+
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while running nmap: {e}\nError Output: {e.output}")
         return None
@@ -132,49 +138,92 @@ def process_xml(xml_file_path):
     return scan_data
 
 
+def add_hyperlink(paragraph, text, url):
+    part = paragraph.part
+    r_id = part.relate_to(url, 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink', is_external=True)
+
+    hyperlink = OxmlElement('w:hyperlink')
+    hyperlink.set('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id', r_id)
+
+    new_run = OxmlElement('w:r')
+    rPr = OxmlElement('w:rPr')
+
+    # Create a new Run property (rPr)
+    rStyle = OxmlElement('w:rStyle')
+    rStyle.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val', 'Hyperlink')
+
+    # Append style to properties
+    rPr.append(rStyle)
+    new_run.append(rPr)
+    new_run.text = text
+    hyperlink.append(new_run)
+
+    paragraph._p.append(hyperlink)
+
+    return paragraph
+
     
 def extract_host_data(root):
     print("Extracting host data")
     host_data = []
     for host in root.findall('./host'):
         try:
-            host_address = host.find('./address').get('addr', 'N/A')
+            host_address_element = host.find('./address')
+            host_address = host_address_element.get('addr', 'N/A') if host_address_element is not None else 'N/A'
             print(f"Processing host: {host_address}")
-            state = host.find('./status').get('state', 'N/A')
+
+            state_element = host.find('./status')
+            state = state_element.get('state', 'N/A') if state_element is not None else 'N/A'
             print(f"State: {state}")
+
             hostname_element = host.find('.//hostname')
             hostname = hostname_element.get('name', 'N/A') if hostname_element is not None else 'N/A'
             print(f"Hostname: {hostname}")
 
-            # Manually counting open TCP and UDP ports
-            tcp_open = 0
-            udp_open = 0
+            # Port data extraction
+            ports_data = []
             for port in host.findall(".//port"):
-                protocol = port.get('protocol')
-                port_state = port.find('state').get('state')
-                if port_state == 'open':
-                    if protocol == 'tcp':
-                        tcp_open += 1
-                    elif protocol == 'udp':
-                        udp_open += 1
-            print(f"TCP Open: {tcp_open}, UDP Open: {udp_open}")
+                protocol = port.get('protocol', 'N/A')
+                state_element = port.find('state')
+                port_state = state_element.get('state', 'N/A') if state_element is not None else 'N/A'
+                service_element = port.find('service')
 
+                service_name = product = version = extrainfo = cpe_link = 'N/A'
+                if service_element is not None:
+                    service_name = service_element.get('name', 'N/A')
+                    product = service_element.get('product', 'N/A')
+                    version = service_element.get('version', 'N/A')
+                    extrainfo = service_element.get('extrainfo', 'N/A')
+                    cpe = service_element.find('cpe')
+                    if cpe is not None:
+                        cpe_text = cpe.text
+                        cpe_link = f'https://nvd.nist.gov/vuln/search/results?form_type=Advanced&cves=on&cpe_version={cpe_text}'
+
+                port_info = {
+                    'port_id': port.get('portid', 'N/A'),
+                    'protocol': protocol,
+                    'state': port_state,
+                    'service_name': service_name,
+                    'product': product,
+                    'version': version,
+                    'extrainfo': extrainfo,
+                    'cpe_link': cpe_link
+                }
+                ports_data.append(port_info)
+
+            # Vulners data extraction
             vulners_script = host.find(".//script[@id='vulners']")
-            if vulners_script is not None:
-                vulners_data = vulners_script.get('output', 'No vulners data found')
-                print(f"Vulners data found for host: {vulners_data}")
-            else:
-                vulners_data = 'No vulners data found'
-                print("No vulners data found for host")
+            vulners_data = vulners_script.get('output', 'No vulners data found') if vulners_script is not None else 'No vulners data found'
+            print(f"Vulners data found for host: {vulners_data}")
 
             host_info = {
                 'state': state,
                 'address': host_address,
                 'hostname': hostname,
-                'tcp_open': tcp_open,
-                'udp_open': udp_open,
+                'ports': ports_data,
                 'vulners_data': vulners_data
             }
+
             host_data.append(host_info)
 
         except Exception as e:
@@ -183,49 +232,80 @@ def extract_host_data(root):
     print(f"Host data extracted: {host_data}")
     return host_data
 
-def create_summary_section(doc, scan_data):
-    doc.add_heading('Scan Results', level=1)
-    start_time = scan_data['start_time']  # Replace with actual data extraction logic
-    end_time = scan_data['end_time']      # Replace with actual data extraction logic
-    total_hosts = scan_data['total_hosts']  # Replace with actual data extraction logic
-    hosts_up = scan_data['hosts_up']        # Replace with actual data extraction logic
-    hosts_down = scan_data['hosts_down']    # Replace with actual data extraction logic
 
-    doc.add_paragraph(f"{start_time} – {end_time}\n")
-    doc.add_paragraph(f"{total_hosts} hosts scanned.\n")
-    doc.add_paragraph(f"{hosts_up} hosts up.\n")
-    doc.add_paragraph(f"{hosts_down} hosts down.\n")
+def create_summary_section(doc, scan_data, host_data):
+    doc.add_heading('Vulnerability Scan Summary', level=1)
+    # Add overall scan summary
+    doc.add_paragraph(f"Scan conducted from {scan_data['start_time']} to {scan_data['end_time']}.")
+    doc.add_paragraph(f"Total hosts scanned: {scan_data['total_hosts']}. {scan_data['hosts_up']} hosts were found to be up.")
+
+    doc.add_paragraph("Key Findings:")
+
+    doc.add_paragraph("\nRecommendations:")
+
     
 def create_detailed_host_section(doc, host_data):
-    doc.add_heading('Scanned Hosts', level=2)
+    doc.add_heading('Online Hosts', level=1)
 
     for host in host_data:
-        doc.add_heading(f"Host: {host['address']} - {host['hostname']}", level=3)
-        doc.add_paragraph(f"State: {host['state']}")
-        doc.add_paragraph(f"TCP Open Ports: {host['tcp_open']}")
-        doc.add_paragraph(f"UDP Open Ports: {host['udp_open']}")
+        # Host Header
+        doc.add_heading(f"Host: {host['address']} - {host['hostname']}", level=2)
 
-        # Display vulners script data
-        doc.add_heading('Vulners Script Data:', level=4)
-        doc.add_paragraph(host['vulners_data'])
+        # Ports Table
+        table = doc.add_table(rows=1, cols=8) # Added one more column for CPE Hyperlinks
+        table.style = 'Table Grid'
+        hdr_cells = table.rows[0].cells
+        headers = ["Port", "Protocol", "State", "Service", "Product", "Version", "Extra Info", "CPE/NVD Link"]
+        for i, header in enumerate(headers):
+            hdr_cells[i].text = header
 
-def create_word_report(xml_filepath):
-    reports_dir = '/opt/simplescan/reports'
+        for port in host['ports']:
+            row_cells = table.add_row().cells
+            row_cells[0].text = port['port_id']
+            row_cells[1].text = port['protocol']
+            row_cells[2].text = port['state']
+            row_cells[3].text = port['service_name']
+            row_cells[4].text = port['product']
+            row_cells[5].text = port['version']
+            row_cells[6].text = port['extrainfo']
+            # Check if CPE link exists and add hyperlink
+            if port['cpe_link'] != 'N/A':
+                p = row_cells[7].paragraphs[0]
+                add_hyperlink(p, 'NVD Link', port['cpe_link'])
+            else:
+                row_cells[7].text = 'N/A'
+
+        # Vulnerabilities Section
+        if 'vulners_data' in host and host['vulners_data']:
+            vulners_paragraph = doc.add_paragraph(style='Body Text')
+            vulners_paragraph.add_run('Vulnerabilities:').bold = True
+            vulners_paragraph.add_run('\n' + host['vulners_data'])
+
+            # Formatting for vulnerabilities
+            font = vulners_paragraph.style.font
+            font.name = 'Courier New'
+            font.size = Pt(10)
+
+    # Ensure each section starts on a new page
+    doc.add_page_break()
+
+
+def create_word_report(filepath):
+    reports_dir = os.path.join(os.path.dirname(__file__), 'reports')
     
     if not os.path.exists(reports_dir):
         os.makedirs(reports_dir)
-
     try:
-        tree = ET.parse(xml_filepath)
+        tree = ET.parse(filepath)
         root = tree.getroot()
-        scan_data = process_xml(xml_filepath)
+        scan_data = process_xml(filepath)
         host_data = extract_host_data(root)
 
         doc = Document()
-        create_summary_section(doc, scan_data)
+        create_summary_section(doc, scan_data, host_data)
         create_detailed_host_section(doc, host_data)
 
-        report_filename = os.path.splitext(os.path.basename(xml_filepath))[0] + ".docx"
+        report_filename = os.path.splitext(os.path.basename(filepath))[0] + ".docx"
         report_filepath = os.path.join(reports_dir, report_filename)
         doc.save(report_filepath)
         print(f"Report saved to: {report_filepath}")
@@ -236,7 +316,7 @@ def create_word_report(xml_filepath):
 @app.route('/retrieve-word-report/<filename>')
 def retrieve_word_report(filename):
     print(f"Retrieving Word report for: {filename}")
-    reports_dir = '/opt/simplescan/reports'
+    reports_dir = os.path.join(os.path.dirname(__file__), 'reports')
     report_filename = os.path.splitext(filename)[0] + ".docx"
     print(f"trying to find: {report_filename}")
     report_filepath = os.path.join(reports_dir, report_filename)
