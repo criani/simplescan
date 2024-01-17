@@ -1,3 +1,6 @@
+
+SimpleScan is a simple, web based frontend that allows for running Nmap based vulnerability scans and reviewing the results in a user friendly way.
+
 # SimpleScan Installation Guide
 
 Welcome to the SimpleScan project! This README provides detailed instructions for installing and running SimpleScan either using Docker or directly on your host system.
