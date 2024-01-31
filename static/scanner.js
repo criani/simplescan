@@ -41,7 +41,6 @@ function initiateScan() {
     });
 }
 
-// Function to populate both dropdowns with the list of scan files
 function populateScanLists() {
 	console.log("populateScanLists called");
     fetch('/list_scans')
@@ -51,9 +50,7 @@ function populateScanLists() {
             alert('Error: ' + data.error);
         } else {
             const scanListRetrieve = document.getElementById('scan-list-retrieve');
-            const scanListReport = document.getElementById('scan-list-report');
             scanListRetrieve.innerHTML = ''; // Clear existing list
-            scanListReport.innerHTML = ''; // Clear existing list
 
             data.scans.forEach(scan => {
                 // Populate the Retrieve Scans dropdown
@@ -64,29 +61,14 @@ function populateScanLists() {
                 linkRetrieve.addEventListener('click', () => displayScan(scan));
                 listItemRetrieve.appendChild(linkRetrieve);
                 scanListRetrieve.appendChild(listItemRetrieve);
-
-                // Populate the Generate Word Report dropdown
-                const listItemReport = document.createElement('li');
-                const linkReport = document.createElement('a');
-                linkReport.href = '#';
-                linkReport.textContent = scan;
-                linkReport.addEventListener('click', () => retrieveWordReport(scan));
-                listItemReport.appendChild(linkReport);
-                scanListReport.appendChild(listItemReport);
             });
         }
     });
 }
 
-
-
-function retrieveWordReport(scanFilename) {
-    // Adjust the filename to replace '.xml' with '.docx' for the report retrieval
-    const reportFilename = scanFilename.replace('.xml', '.docx');
-    window.location.href = '/retrieve-word-report/' + reportFilename;
+function printPage() {
+    window.print();
 }
-
-
 
 function displayScan(scanFilename) {
     fetch('/retrieve_scan/' + scanFilename)

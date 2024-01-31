@@ -7,25 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>SimpleScan</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" /> 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/simplex/bootstrap.min.css" crossorigin="anonymous"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" type="text/css" crossorigin="anonymous"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            padding-top: 20px; /* Padding for navbar */
-            padding-bottom: 80px; /* Padding for footer */
-        }
-        footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 40px; /* Set the fixed height of the footer here */
-            background-color: #f5f5f5;
-        }
-    </style>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top ">
         <!-- Navbar content -->
         <div class="container-fluid">
             <div class="navbar-header">
@@ -43,11 +30,12 @@
         <li><a href="#onlinehosts">Online Hosts</a></li>
         <li><a href="#openservices">Open Services</a></li>
         </ul>
-    </div>
-        </div>
+		</div>
+       </div>
     </nav>
 <div class="container-fluid text-center" style="padding-top: 30px;">
-    <h1>SimpleScan</h1>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="max-width: 400px;"/>
+	<h1>SimpleScan</h1>
     <div class="row justify-content-center">
 <div class="row justify-content-center">
     <div class="col">
@@ -58,17 +46,18 @@
 </div>
 
     </div>
-<div class="row justify-content-center" style="margin-top: 10px;">
+	<br/>
+<div class="row justify-content-center print-hide">
     <div class="col-12">
         <button id="scan-btn" class="btn btn-primary">Start Scan</button>
      </div>
-	 
-	 
-	 <h6>OR</h6>
-	 
-	 
+<br/>
+<div class="print-hide">
+<button onclick="printPage()">Print Report</button>
+</div>
+<br/>
 	<!-- Dropdown for retrieving prior scans -->
-<div class="btn-group">
+<div class="btn-group print-hide">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Retrieve Prior Scans <span class="caret"></span>
     </button>
@@ -76,19 +65,7 @@
         <!-- Scans will be populated here -->
     </ul>
 </div>
-
-<!-- Dropdown for generating Word reports -->
-<div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Retrieve Word Report <span class="caret"></span>
-    </button>
-    <ul id="scan-list-report" class="dropdown-menu">
-        <!-- Scans will be populated here -->
-    </ul>
-</div>
-
 <br/>
-
 </div>
     <div id="status"></div>
     <div id="results"></div>
