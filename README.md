@@ -36,7 +36,7 @@ SimpleScan can be easily installed and run in a Docker container. This method is
    Run the following in your `/opt/` directory, or any other directory where you have appropriate permissions and want to install.
 
    ```sh
-   curl -s https://raw.githubusercontent.com/criani/simplescan/main/autoinstall.sh | sudo bash
+   curl -s https://raw.githubusercontent.com/criani/simplescan/main/autoinstall_deb.sh | sudo bash
    ```
    This script will automatically pull and run the autoinstall script on your Debian based system and install Docker and docker-compose (if needed) and the required images, and will set up and start SimpleScan in a Docker container listening on port 5000 of the host system.
    To access SimpleScan simply open a browser and go to `http://<host-IP>:5000` where `<host-IP>` is the IP address of the Docker host. Scans will persist on the host in /opt/simplescan/scans and reports will be in /opt/simplescan/reports. 
